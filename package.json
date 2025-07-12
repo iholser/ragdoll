@@ -1,0 +1,45 @@
+{
+  "name": "ragdoll",
+  "version": "1.0.0",
+  "description": "RAG-powered AI chat agent web application",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "initialize": "sh ./scripts/setup-dotenv.sh",
+    "start": "dev",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "npm run dev --workspace=packages/server",
+    "dev:client": "npm run dev --workspace=packages/client",
+    "build": "npm run build --workspaces",
+    "build:server": "npm run build --workspace=packages/server",
+    "build:client": "npm run build --workspace=packages/client",
+    "test": "npm run test --workspaces",
+    "test:server": "npm run test --workspace=packages/server",
+    "test:client": "npm run test --workspace=packages/client",
+    "lint": "npm run lint --workspaces",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [
+    "rag",
+    "ai",
+    "chat",
+    "nestjs",
+    "react",
+    "typescript",
+    "aws-bedrock",
+    "vector-database"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@ai-sdk/amazon-bedrock": "^2.2.11"
+  }
+}
