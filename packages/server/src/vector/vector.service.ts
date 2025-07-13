@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { ChromaClient, Collection } from "chromadb";
 import { embed } from "ai";
 import { bedrock } from "@ai-sdk/amazon-bedrock";
+import { ollama } from 'ollama-ai-provider';
 import { DocumentChunk, VectorSearchResult, VectorSearchQuery } from '../common/types';
 
 @Injectable()
@@ -14,7 +15,8 @@ export class VectorService {
   constructor(private configService: ConfigService) {
     const host = this.configService.get<string>('CHROMADB_HOST', 'localhost');
     const port = this.configService.get<string>('CHROMADB_PORT', '8000');
-    this.collectionName = this.configService.get<string>('CHROMADB_COLLECTION', 'ragdoll-documents');
+    const provider = this.configService.get<string>('LLM_PROVIDER', 'bedrock');
+    this.collectionName = `${this.configService.get<string>('CHROMADB_COLLECTION', 'ragdoll-documents')}-${provider}`;
 
     try {
       this.chroma = new ChromaClient({
@@ -84,22 +86,23 @@ export class VectorService {
       const distances = searchResults.distances?.[0] || [];
       for (let i = 0; i < ids.length; i++) {
         const similarity = 1 - (distances[i] ?? 1);
-          const meta = metadatas[i] || {};
-          const chunk: DocumentChunk = {
-            id: ids[i],
-            content: meta.content as string,
-            metadata: {
-              filename: meta.filename as string,
-              fileType: meta.fileType as string,
-              chunkIndex: meta.chunkIndex as number,
-              totalChunks: meta.totalChunks as number,
-              createdAt: new Date(meta.createdAt as string),
-            },
-          };
-          results.push({
-            chunk,
-            score: similarity,
-          });
+        // if (similarity > threshold) {}
+        const meta = metadatas[i] || {};
+        const chunk: DocumentChunk = {
+          id: ids[i],
+          content: meta.content as string,
+          metadata: {
+            filename: meta.filename as string,
+            fileType: meta.fileType as string,
+            chunkIndex: meta.chunkIndex as number,
+            totalChunks: meta.totalChunks as number,
+            createdAt: new Date(meta.createdAt as string),
+          },
+        };
+        results.push({
+          chunk,
+          score: similarity,
+        });
       }
       return results;
     } catch (error) {
@@ -108,17 +111,31 @@ export class VectorService {
     }
   }
 
-  private async generateEmbedding(text: string): Promise<number[]> {
-    const modelId = this.configService.get<string>('BEDROCK_EMBEDDING_MODEL_ID', 'amazon.titan-embed-text-v1');
-    const model = bedrock.embedding(modelId);
-
-    const result = await embed({
-      model,
-      value: text,
-    });
-    if (!result.embedding) {
-      throw new Error('No embedding returned from Bedrock');
+  async generateEmbedding(text: string): Promise<number[]> {
+    const provider = this.configService.get<string>('LLM_PROVIDER', 'bedrock');
+    console.log('Using LLM provider for embedding:', provider);
+    if (provider === 'ollama') {
+      const ollamaModel = this.configService.get<string>('EMBEDDING_MODEL', 'llama3.2');
+      const model = ollama.embedding(ollamaModel);
+      const result = await embed({
+        model,
+        value: text,
+      });
+      if (!result.embedding) {
+        throw new Error('No embedding returned from Ollama');
+      }
+      return result.embedding;
+    } else {
+      const modelId = this.configService.get<string>('EMBEDDING_MODEL', 'amazon.titan-embed-text-v1');
+      const model = bedrock.embedding(modelId);
+      const result = await embed({
+        model,
+        value: text,
+      });
+      if (!result.embedding) {
+        throw new Error('No embedding returned from Bedrock');
+      }
+      return result.embedding;
     }
-    return result.embedding;
   }
 }

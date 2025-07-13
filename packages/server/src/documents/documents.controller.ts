@@ -54,11 +54,9 @@ export class DocumentsController {
         file.mimetype,
       );
 
-      // Store chunks in vector database
-      // Note: In a real implementation, you would generate embeddings first
+      // Store chunks in vector database with real embeddings
       for (const chunk of processedDoc.chunks) {
-        // Generate embedding for chunk (placeholder implementation)
-        chunk.embedding = await this.generateEmbedding(chunk.content);
+        chunk.embedding = await this.vectorService.generateEmbedding(chunk.content);
         await this.vectorService.storeChunk(chunk);
       }
 
@@ -73,13 +71,5 @@ export class DocumentsController {
       console.error('Error processing document:', error);
       throw new BadRequestException('Failed to process document');
     }
-  }
-
-  // Placeholder for embedding generation
-  // In a real implementation, you would use a service like OpenAI embeddings
-  private async generateEmbedding(text: string): Promise<number[]> {
-    // This is a placeholder - you would integrate with an embedding service
-    // For now, return a dummy embedding
-    return new Array(1536).fill(0).map(() => Math.random());
   }
 }
