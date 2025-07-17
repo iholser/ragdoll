@@ -1,0 +1,20 @@
+{
+  "name": "@ragdoll/shared-types",
+  "version": "1.0.0",
+  "description": "Shared TypeScript types and schemas for RAGdoll",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "^0.31.0",
+    "zod": "^3.22.0"
+  }
+}

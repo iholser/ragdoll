@@ -1,0 +1,67 @@
+{
+  "name": "ragdoll",
+  "version": "2.0.0",
+  "description": "RAG-powered Customer Service Agent Builder - A no-code platform for creating and deploying AI chat agents",
+  "private": true,
+  "packageManager": "pnpm@8.15.0",
+  "scripts": {
+    "start": "turbo dev",
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "type-check": "turbo type-check",
+    "clean": "turbo clean",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "docker:dev": "docker-compose -f docker/docker-compose.dev.yml up -d",
+    "docker:down": "docker-compose -f docker/docker-compose.dev.yml down"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "turbo": "^1.10.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "ai": "^3.0.0",
+    "@ai-sdk/amazon-bedrock": "^0.0.10",
+    "ollama-ai-provider": "^0.8.0",
+    "fastify": "^4.24.0",
+    "@fastify/cors": "^8.0.0",
+    "@fastify/multipart": "^8.0.0",
+    "@fastify/jwt": "^7.0.0",
+    "@fastify/swagger": "^8.0.0",
+    "@fastify/swagger-ui": "^2.0.0",
+    "@sinclair/typebox": "^0.31.0",
+    "chromadb": "^1.7.0",
+    "pg": "^8.11.0",
+    "@types/pg": "^8.10.0",
+    "zod": "^3.22.0",
+    "ws": "^8.14.0",
+    "@types/ws": "^8.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/ragdoll.git"
+  },
+  "keywords": [
+    "ai",
+    "rag",
+    "customer-service",
+    "chatbot",
+    "no-code",
+    "typescript",
+    "fastify",
+    "react"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
