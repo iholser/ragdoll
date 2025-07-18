@@ -61,7 +61,14 @@ export const initializeChroma = async (): Promise<ChromaClient> => {
 export const setupDatabase = async () => {
   try {
     await initializePostgres();
-    await initializeChroma();
+    
+    // Try to initialize ChromaDB but don't fail if it's not available
+    try {
+      await initializeChroma();
+    } catch (error) {
+      logger.warn('⚠️  ChromaDB not available - continuing without RAG functionality');
+    }
+    
     await setupDatabaseWithMigrations();
     logger.info('🗄️  Database setup complete');
   } catch (error) {

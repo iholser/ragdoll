@@ -13,6 +13,7 @@ import { chatRoutes } from './routes/chat';
 import { workflowRoutes } from './routes/workflows';
 import { healthRoutes } from './routes/health';
 import { authRoutes } from './routes/auth';
+import { runtimeRoutes } from './routes/runtime';
 import { errorHandler } from './middleware/errorHandler';
 import { authMiddleware } from './middleware/auth';
 import { logger } from './utils/logger';
@@ -112,6 +113,7 @@ async function buildApp() {
   await fastify.register(documentRoutes, { prefix: '/api/documents' });
   await fastify.register(workflowRoutes, { prefix: '/api/workflows' });
   await fastify.register(chatRoutes, { prefix: '/api/chat' });
+  await fastify.register(runtimeRoutes); // Runtime routes include their own prefix
 
   return fastify;
 }
